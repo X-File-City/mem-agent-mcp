@@ -1,0 +1,301 @@
+{
+  "id": "mem-agent-mcp-onboarding",
+  "title": "mem-agent-mcp Onboarding Tour",
+  "description": "Explore the Memory Agent MCP server — an MCP integration for Dria's Memory Agent that connects AI assistants to Obsidian-style memory systems with sandboxed code execution and pluggable data connectors",
+  "version": "1.0.0",
+  "audience": "New Developers & AI Assistants",
+  "prerequisites": [
+    "Basic Python knowledge",
+    "Familiarity with MCP (Model Context Protocol)"
+  ],
+  "steps": [
+    {
+      "id": "step-1-overview",
+      "title": "Project Overview",
+      "description": "Welcome! This project is an MCP server that connects AI assistants like Claude Desktop, LM Studio, and ChatGPT to a local memory management system powered by Dria's Memory Agent. The codebase is organized into four main modules: the core agent, server transports, memory connectors for importing external data, and sample memory packs.",
+      "estimatedTime": 60,
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "top-level-modules",
+          "name": "Core Modules",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "agent", "type": "directory" },
+            { "path": "mcp_server", "type": "directory" },
+            { "path": "memory_connectors", "type": "directory" },
+            { "path": "memories", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "entry-points",
+          "name": "Entry Points & Config",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "chat_cli.py", "type": "file" },
+            { "path": "Makefile", "type": "file" },
+            { "path": "pyproject.toml", "type": "file" },
+            { "path": "README.md", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "hover-directory",
+          "description": "Hover over each colored module to see the directory structure",
+          "target": "agent"
+        }
+      ]
+    },
+    {
+      "id": "step-2-agent-core",
+      "title": "Core Agent Module",
+      "description": "This is the brain of the system. The orchestration layer manages memory interactions through an LLM chat loop supporting up to 20 tool turns per query. A model abstraction handles multiple backends — OpenRouter, vLLM, and MLX via LM Studio. The execution engine provides sandboxed code execution with path whitelisting, timeout protection, and restricted builtins. A dedicated tools layer exposes the memory API: file operations, directory management, size limits, and Obsidian-style wikilink navigation.",
+      "estimatedTime": 120,
+      "focusDirectory": "agent",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "agent-orchestration",
+          "name": "Orchestration",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "agent/agent.py", "type": "file" },
+            { "path": "agent/schemas.py", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        },
+        {
+          "id": "agent-execution",
+          "name": "Execution & Tools",
+          "color": "#ef4444",
+          "items": [
+            { "path": "agent/engine.py", "type": "file" },
+            { "path": "agent/tools.py", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        },
+        {
+          "id": "agent-model",
+          "name": "Model & Config",
+          "color": "#10b981",
+          "items": [
+            { "path": "agent/model.py", "type": "file" },
+            { "path": "agent/settings.py", "type": "file" },
+            { "path": "agent/system_prompt.txt", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Click to see the main Agent class and chat loop",
+          "target": "agent/agent.py"
+        },
+        {
+          "type": "click-file",
+          "description": "Click to see the sandboxed code execution engine",
+          "target": "agent/engine.py"
+        }
+      ]
+    },
+    {
+      "id": "step-3-mcp-server",
+      "title": "MCP Server Transports",
+      "description": "This module exposes the agent over multiple transport protocols. The primary server uses stdio-based MCP for Claude Desktop and Claude Code. Additional transports provide HTTP/REST and MCP-over-HTTP endpoints for ChatGPT integration, along with Server-Sent Events support. A setup utilities folder handles memory path selection, configuration generation, LM Studio installation, and privacy filter management.",
+      "estimatedTime": 90,
+      "focusDirectory": "mcp_server",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "mcp-primary",
+          "name": "Primary MCP Server",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "mcp_server/server.py", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "fill"
+        },
+        {
+          "id": "mcp-http-transports",
+          "name": "HTTP Transports",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "mcp_server/http_server.py", "type": "file" },
+            { "path": "mcp_server/mcp_http_server.py", "type": "file" },
+            { "path": "mcp_server/mcp_sse_server.py", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        },
+        {
+          "id": "mcp-scripts",
+          "name": "Setup & Utilities",
+          "color": "#10b981",
+          "items": [
+            { "path": "mcp_server/scripts", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Click to see the primary MCP server and its memory agent tool",
+          "target": "mcp_server/server.py"
+        }
+      ]
+    },
+    {
+      "id": "step-4-memory-connectors",
+      "title": "Memory Connectors",
+      "description": "This module imports external data into the memory system using a plugin architecture. An abstract base class defines a three-step connector workflow: extract, organize, and generate. Connectors exist for ChatGPT history (with keyword and AI-powered categorization), Notion and Nuclino exports, and live GitHub and Google Docs APIs. An interactive setup wizard and a command-line interface make it easy to run any connector.",
+      "estimatedTime": 120,
+      "focusDirectory": "memory_connectors",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "connector-base",
+          "name": "Base & CLI",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "memory_connectors/base.py", "type": "file" },
+            { "path": "memory_connectors/memory_connect.py", "type": "file" },
+            { "path": "memory_connectors/memory_wizard.py", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "fill"
+        },
+        {
+          "id": "connector-export",
+          "name": "Export-Based Connectors",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "memory_connectors/chatgpt_history", "type": "directory" },
+            { "path": "memory_connectors/notion", "type": "directory" },
+            { "path": "memory_connectors/nuclino", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "connector-live",
+          "name": "Live API Connectors",
+          "color": "#ef4444",
+          "items": [
+            { "path": "memory_connectors/github_live", "type": "directory" },
+            { "path": "memory_connectors/google_docs_live", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Click to see the connector abstract base class",
+          "target": "memory_connectors/base.py"
+        },
+        {
+          "type": "hover-directory",
+          "description": "Hover to see the ChatGPT history parser, converter, and embedding connector",
+          "target": "memory_connectors/chatgpt_history"
+        }
+      ]
+    },
+    {
+      "id": "step-5-sample-memories",
+      "title": "Sample Memory Packs",
+      "description": "This directory contains demo data showcasing the Obsidian-style memory format. Each pack has a user entry point and entity subdirectories. The healthcare pack demonstrates multi-entity relationships with patient records, care plans, clinical notes, labs, and wearable data. The client success pack shows sales and success team collaboration patterns. Together they illustrate how memories are structured with wikilinks and frontmatter metadata.",
+      "estimatedTime": 60,
+      "focusDirectory": "memories",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "healthcare-pack",
+          "name": "Healthcare Memory",
+          "color": "#ef4444",
+          "items": [
+            { "path": "memories/healthcare", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "client-success-pack",
+          "name": "Client Success Memory",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "memories/client_success", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "renderStrategy": "border"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "hover-directory",
+          "description": "Hover over healthcare to explore patient records, care plans, and clinical notes",
+          "target": "memories/healthcare"
+        }
+      ]
+    },
+    {
+      "id": "step-6-getting-started",
+      "title": "Getting Started",
+      "description": "To get started, install dependencies, configure your memory directory, and launch the MCP server or the interactive chat interface. You can also import data from external sources using the memory wizard. The build configuration highlighted here is your central hub for all operations, and the readme covers platform-specific notes for macOS, Linux, and aarch64.",
+      "estimatedTime": 60,
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "getting-started-files",
+          "name": "Start Here",
+          "color": "#10b981",
+          "items": [
+            { "path": "Makefile", "type": "file" },
+            { "path": "README.md", "type": "file" },
+            { "path": "pyproject.toml", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "fill"
+        }
+      ],
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Click to see all available build targets",
+          "target": "Makefile"
+        },
+        {
+          "type": "click-file",
+          "description": "Click for full setup instructions and documentation",
+          "target": "README.md"
+        }
+      ],
+      "resources": [
+        {
+          "title": "Dria Memory Agent",
+          "url": "https://github.com/firstbatchxyz/dria-sdk",
+          "type": "documentation"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "author": "Claude",
+    "createdAt": "2026-03-24",
+    "tags": ["onboarding", "mcp", "memory-agent", "architecture"]
+  }
+}
